@@ -14,18 +14,27 @@ public class InventoryItemService
     public int NextId() => recordCount + 1;
     public async Task<List<InventoryItem>> GetInventoryAsync()
     {
+        return await GetConditionalInventoryAsync((InventoryItem item)=> !item.Deleted);
+    }
+
+    public async Task<List<InventoryItem>> GetDeletedAsync(){
+        return await GetConditionalInventoryAsync((InventoryItem item) => item.Deleted);
+    }
+
+    public async Task<List<InventoryItem>> GetConditionalInventoryAsync(Func<InventoryItem, bool> Condition){
         recordCount = 0;
         using (var reader = new StreamReader(dataDocPath))
         using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture)){
             List<InventoryItem> inventory = new List<InventoryItem>();
             IAsyncEnumerable<InventoryItem> records = csv.GetRecordsAsync<InventoryItem>();
             await foreach (var record in records){
-                inventory.Add(record);
+                if(Condition(record)) inventory.Add(record); //Deleted items elsewhere
                 ++recordCount;
             }
             return inventory;
         }
     }
+
 
     // Add inventory item, probably no async needed, only adding one item
     public async Task<List<InventoryItem>> AddAsync(InventoryItem item){
@@ -44,5 +53,12 @@ public class InventoryItemService
             csv.WriteRecord(item);
         }
         return inventory;
+    }
+
+    // Update existing item, compare IDs to determine what to change
+    // Compare oldItem, to expected item based off ID to ensure valid
+    // 
+    public async Task<List<InventoryItem>> UpdateAsync(InventoryItem oldItem, InventoryItem newItem){
+        return new List<InventoryItem>();
     }
 }
