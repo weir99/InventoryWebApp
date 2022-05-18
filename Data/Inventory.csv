@@ -1,4 +1,4 @@
-id,name,quantity
+id,name,quantity,deleted
 1,Test1,3
 2,Test2,2
 0,Frame,0

@@ -29,8 +29,4 @@ public class InventoryItemService
             csv.WriteRecord(item);
         }
     }
-
-
-
-
 }

@@ -13,4 +13,6 @@ public class InventoryItem
     [Name("quantity")]
     public int Quantity { get; set; }
 
+    [Name("deleted")]
+    public bool Deleted { get; set; } = false;
 }
