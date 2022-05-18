@@ -17,7 +17,7 @@ public class InventoryItemService
         }
     }
 
-    // Add inventory item, probably no threading needed, only adding one item
+    // Add inventory item, probably no async needed, only adding one item
     public void Add(InventoryItem item){
         var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture){
             HasHeaderRecord = false
@@ -25,6 +25,7 @@ public class InventoryItemService
         using (var stream = File.Open(dataDocPath, FileMode.Append))
         using (var writer = new StreamWriter(stream))
         using (var csv = new CsvWriter(writer, config)){
+            csv.NextRecord();
             csv.WriteRecord(item);
         }
     }

@@ -32,15 +32,35 @@ else
                     <td>@item.Quantity</td>
                 </tr>
             }
+            <tr>
+                <td> <input @bind="newId"></td>
+                <td> <input @bind="newName"></td>
+                <td> <input @bind="newQuantity"></td>
+                <td><button @onclick="AddItem">Add</button></td>
+            </tr>
         </tbody>
     </table>
 }
 
 @code {
     private List<InventoryItem>? inventory;
-
+    private int newId;
+    private string? newName;
+    private int newQuantity;
+    private async void AddItem(){
+        if (!string.IsNullOrWhiteSpace(newName)){
+            InventoryService.Add(new InventoryItem{Id = newId, Name = newName, Quantity = newQuantity});
+            newId = 0;
+            newQuantity = 0;
+            newName = "";
+            await UpdateInventory(); // Could just update inventory right away, but better safe than sorry
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
+        await UpdateInventory();
+    }
+    private async Task UpdateInventory(){
         inventory = await InventoryService.GetInventoryAsync();
     }
 }
