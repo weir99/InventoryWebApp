@@ -14,6 +14,7 @@ public class InventoryItemService
     public int NextId() => recordCount + 1;
     public async Task<List<InventoryItem>> GetInventoryAsync()
     {
+        recordCount = 0;
         using (var reader = new StreamReader(dataDocPath))
         using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture)){
             List<InventoryItem> inventory = new List<InventoryItem>();
