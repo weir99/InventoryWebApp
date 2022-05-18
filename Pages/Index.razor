@@ -33,7 +33,7 @@ else
                 </tr>
             }
             <tr>
-                <td> <input @bind="newId"></td>
+                <td>@InventoryService.NextId()</td>
                 <td> <input @bind="newName"></td>
                 <td> <input @bind="newQuantity"></td>
                 <td><button @onclick="AddItem">Add</button></td>
@@ -44,13 +44,11 @@ else
 
 @code {
     private List<InventoryItem>? inventory;
-    private int newId;
     private string? newName;
     private int newQuantity;
     private async void AddItem(){
         if (!string.IsNullOrWhiteSpace(newName)){
-            inventory = await InventoryService.AddAsync(new InventoryItem{Id = newId, Name = newName, Quantity = newQuantity});
-            newId = 0;
+            inventory = await InventoryService.AddAsync(new InventoryItem{Name = newName, Quantity = newQuantity});
             newQuantity = 0;
             newName = "";
             StateHasChanged();
