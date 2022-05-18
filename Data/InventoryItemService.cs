@@ -7,7 +7,6 @@ namespace InventoryWebApp.Data;
 
 public class InventoryItemService
 {
-
     string dataDocPath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Inventory.csv");
 
     public Task<List<InventoryItem>> GetInventoryAsync()
@@ -17,4 +16,20 @@ public class InventoryItemService
             return Task.FromResult((csv.GetRecords<InventoryItem>()).ToList<InventoryItem>());
         }
     }
+
+    // Add inventory item, probably no threading needed, only adding one item
+    public void Add(InventoryItem item){
+        var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture){
+            HasHeaderRecord = false
+        };
+        using (var stream = File.Open(dataDocPath, FileMode.Append))
+        using (var writer = new StreamWriter(stream))
+        using (var csv = new CsvWriter(writer, config)){
+            csv.WriteRecord(item);
+        }
+    }
+
+
+
+
 }
