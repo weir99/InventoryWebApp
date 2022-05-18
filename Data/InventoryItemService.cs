@@ -35,7 +35,7 @@ public class InventoryItemService
         var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture){
             HasHeaderRecord = false
         };
-        item.Id = recordCount; // Set item ID
+        item.Id = ++recordCount; // Set item ID
         inventory.Add(item);
         using (var stream = File.Open(dataDocPath, FileMode.Append))
         using (var writer = new StreamWriter(stream))
