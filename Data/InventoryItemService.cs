@@ -9,11 +9,16 @@ public class InventoryItemService
 {
     string dataDocPath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Inventory.csv");
 
-    public Task<List<InventoryItem>> GetInventoryAsync()
+    public async Task<List<InventoryItem>> GetInventoryAsync()
     {
         using (var reader = new StreamReader(dataDocPath))
         using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture)){
-            return Task.FromResult((csv.GetRecords<InventoryItem>()).ToList<InventoryItem>());
+            List<InventoryItem> inventory = new List<InventoryItem>();
+            IAsyncEnumerable<InventoryItem> records = csv.GetRecordsAsync<InventoryItem>();
+            await foreach (var record in records){
+                inventory.Add(record);
+            }
+            return inventory;
         }
     }
 
