@@ -1,16 +1,20 @@
+using CsvHelper.Configuration;
+using CsvHelper;
+using CsvHelper.Expressions;
 namespace InventoryWebApp.Data;
+
+
 
 public class InventoryItemService
 {
 
 
-    public Task<InventoryItem[]> GetInventoryASync()
+
+    public Task<IEnumerable<InventoryItem>> GetInventoryAsync()
     {
-        return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        }).ToArray());
+        using (var reader = new StreamReader(""))
+        using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture)){
+            return Task.FromResult(csv.GetRecords<InventoryItem>());
+        }
     }
 }
