@@ -23,7 +23,10 @@ public class InventoryItemService
     }
 
     // Add inventory item, probably no async needed, only adding one item
-    public void Add(InventoryItem item){
+    public async Task<List<InventoryItem>> AddAsync(InventoryItem item){
+
+        List<InventoryItem> inventory = await GetInventoryAsync();
+
         var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture){
             HasHeaderRecord = false
         };
@@ -33,5 +36,7 @@ public class InventoryItemService
             csv.NextRecord();
             csv.WriteRecord(item);
         }
+        inventory.Add(item);
+        return inventory;
     }
 }

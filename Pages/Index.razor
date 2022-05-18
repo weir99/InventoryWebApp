@@ -49,11 +49,11 @@ else
     private int newQuantity;
     private async void AddItem(){
         if (!string.IsNullOrWhiteSpace(newName)){
-            InventoryService.Add(new InventoryItem{Id = newId, Name = newName, Quantity = newQuantity});
+            inventory = await InventoryService.AddAsync(new InventoryItem{Id = newId, Name = newName, Quantity = newQuantity});
             newId = 0;
             newQuantity = 0;
             newName = "";
-            await UpdateInventory(); // Could just update inventory right away, but better safe than sorry
+            StateHasChanged();
         }
     }
     protected override async Task OnInitializedAsync()
