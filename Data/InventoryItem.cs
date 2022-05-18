@@ -10,4 +10,7 @@ public class InventoryItem
     [Name("name")]
     public string? Name { get; set; }
 
+    [Name("quantity")]
+    public int Quantity { get; set; }
+
 }
