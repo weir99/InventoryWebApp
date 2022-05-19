@@ -1,6 +1,6 @@
 id,name,quantity,deleted,comment
-1,test1,0,false,
-2,test2,0,false,
-3,test3,0,false,
-4,test4,0,false,
-5,test5,0,false,
+1,Apples,15,false,
+2,Oranges,3,true, Shipment Failure
+3,Pears,15,true,
+4,Bananas,300,false,
+5,Grapse,60,false,
