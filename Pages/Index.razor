@@ -72,11 +72,11 @@ else
         updateName = item.Name;
         updateQuantity = item.Quantity;
         updating = item.Id;
-        //StateHasChanged();
     }
     private async void SaveUpdate(InventoryItem item){
         inventory = await InventoryService.UpdateAsync(item, new InventoryItem{Name = updateName, Quantity = updateQuantity});
         updating = -1;
+        StateHasChanged();
     }
     protected override async Task OnInitializedAsync()
     {
