@@ -1,6 +1,6 @@
-id,name,quantity,deleted,2,f,4,False
-1,test1,0,false
-2,test2,0,false
-3,test3,0,false
-4,test4,0,false
-5,test5,0,false
+id,name,quantity,deleted,comment
+1,test1,0,false,
+2,test2,0,false,
+3,test3,0,false,
+4,test4,0,false,
+5,test5,0,false,
