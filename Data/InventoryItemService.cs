@@ -121,8 +121,6 @@ public class InventoryItemService
                         throw new ArgumentException("Object to delete doesn't match given", nameof(item));
                     } 
                     else{
-                        Console.WriteLine("Deleting");
-                        Console.WriteLine(item.Deleted);
                         csvW.WriteRecord(item);
                         csvW.NextRecord();
                     }
