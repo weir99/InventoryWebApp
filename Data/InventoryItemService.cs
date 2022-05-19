@@ -59,6 +59,6 @@ public class InventoryItemService
     // Compare oldItem, to expected item based off ID to ensure valid
     // 
     public async Task<List<InventoryItem>> UpdateAsync(InventoryItem oldItem, InventoryItem newItem){
-        return new List<InventoryItem>();
+        return await GetInventoryAsync();
     }
 }

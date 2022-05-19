@@ -24,13 +24,23 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in inventory)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@item.Quantity</td>
-                </tr>
+            @foreach (var item in inventory){   
+                @if(item.Id != updating){
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Quantity</td>
+                        <td><button @onclick="()=>Updating(item)">Update</button></td>
+                    </tr>
+                }
+                else{
+                    <tr>
+                        <td>@item.Id</td>
+                        <td><input @bind="updateName"/></td>
+                        <td><input @bind="updateQuantity"/></td> 
+                        <td><button @onclick="SaveUpdate">Save Update</button></td>
+                    </tr> 
+                }
             }
             <tr>
                 <td>@InventoryService.NextId()</td>
@@ -43,6 +53,10 @@ else
 }
 
 @code {
+    private int updating = -1;
+    private string? updateName;
+    private int updateQuantity;
+
     private List<InventoryItem>? inventory;
     private string? newName;
     private int newQuantity;
@@ -53,6 +67,16 @@ else
             newName = "";
             StateHasChanged();
         }
+    }
+    private async void Updating(InventoryItem item){
+        updateName = item.Name;
+        updateQuantity = item.Quantity;
+        updating = item.Id;
+        //StateHasChanged();
+    }
+    private async void SaveUpdate(InventoryItem item){
+        inventory = await InventoryService.UpdateAsync(item, new InventoryItem{Name = updateName, Quantity = updateQuantity});
+        updating = -1;
     }
     protected override async Task OnInitializedAsync()
     {
