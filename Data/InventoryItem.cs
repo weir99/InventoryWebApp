@@ -15,4 +15,7 @@ public class InventoryItem
 
     [Name("deleted")]
     public bool Deleted { get; set; } = false;
+    
+    [Name("comment")]
+    public string DeletionComment { get; set; }
 }

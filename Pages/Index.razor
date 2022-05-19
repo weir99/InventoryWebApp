@@ -98,7 +98,7 @@ else
     }
 
     private async void Delete(InventoryItem item){
-        inventory = await InventoryService.DeleteAsync(item);
+        inventory = await InventoryService.DeleteAsync(item, deleteMessage);
         deleteMessage = "";
         deleting = -1;
         StateHasChanged();

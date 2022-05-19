@@ -77,7 +77,6 @@ public class InventoryItemService
                         throw new ArgumentException("Object to change doesn't match given", nameof(oldItem));
                     } 
                     else{
-                        Console.WriteLine("updating");
                         csvW.WriteRecord(newItem);
                         csvW.NextRecord();
                     }
@@ -87,13 +86,58 @@ public class InventoryItemService
                     csvW.WriteRecord(record);
                     csvW.NextRecord();
                 }
-                Console.WriteLine(record.Id);
-                Console.WriteLine(record.Name);
-                Console.WriteLine(record.Quantity);
             }
         }
-        // Check that we are updating something, and the write something
+        // Check that we updated something
         if(!changed) throw new ArgumentOutOfRangeException("Cannot find item to update", nameof(oldItem));
+
+        // Clean up
+        File.Delete(dataDocPath);
+        File.Copy(tempDocPath, dataDocPath);
+        File.Delete(tempDocPath);
+        return await GetInventoryAsync();
+    }
+
+    // Delete existing item, compare IDs to determine what to change
+    // Compare oldItem, to expected item based off ID to ensure valid
+    // Copies data to temp file, then saves that temp file as original
+    // Similar to update, should try to remove repetition
+    public async Task<List<InventoryItem>> DeleteAsync(InventoryItem item, string? comment){
+        int targetId = item.Id;
+        bool changed = false;
+        item.Deleted = true;
+        item.DeletionComment = comment;
+        using (var writer = new StreamWriter(tempDocPath))
+        using (var csvW = new CsvWriter(writer, System.Globalization.CultureInfo.InvariantCulture))
+        using (var reader = new StreamReader(dataDocPath))
+        using (var csvR = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture)){
+            IAsyncEnumerable<InventoryItem> records = csvR.GetRecordsAsync<InventoryItem>();
+            csvW.WriteHeader<InventoryItem>();
+            csvW.NextRecord();
+            await foreach (var record in records){
+                if(record.Id == targetId){
+                     // Check that we are updating the right thing
+                    if(record.Name != item.Name || record.Quantity != item.Quantity){
+                        throw new ArgumentException("Object to delete doesn't match given", nameof(item));
+                    } 
+                    else{
+                        Console.WriteLine("Deleting");
+                        Console.WriteLine(item.Deleted);
+                        csvW.WriteRecord(item);
+                        csvW.NextRecord();
+                    }
+                    changed = true;
+                }
+                else{
+                    csvW.WriteRecord(record);
+                    csvW.NextRecord();
+                }
+            }
+        }
+        // Check that we deleted something
+        if(!changed) throw new ArgumentOutOfRangeException("Cannot find item to update", nameof(item));
+
+        // Finish up
         File.Delete(dataDocPath);
         File.Copy(tempDocPath, dataDocPath);
         File.Delete(tempDocPath);
