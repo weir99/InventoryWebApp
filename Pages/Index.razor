@@ -25,15 +25,25 @@ else
         </thead>
         <tbody>
             @foreach (var item in inventory){   
-                @if(item.Id != updating){
+                @if(item.Id != updating && item.Id != deleting){
                     <tr>
                         <td>@item.Id</td>
                         <td>@item.Name</td>
                         <td>@item.Quantity</td>
                         <td><button @onclick="()=>Updating(item)">Update</button></td>
+                       <td><button @onclick="()=>Deleting(item)">Delete</button></td> 
                     </tr>
                 }
-                else{
+                else if(item.Id == deleting){
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Quantity</td> 
+                        <td><input placeholder="Delete Comment" @bind="deleteMessage"/> </td>
+                        <td><button @onclick="()=>Delete(item)"> Confirm Delete</button></td>
+                    </tr>
+                }
+                else if(item.Id == updating){
                     <tr>
                         <td>@item.Id</td>
                         <td><input @bind="updateName"/></td>
@@ -53,6 +63,9 @@ else
 }
 
 @code {
+
+    private int deleting = -1;
+    private string? deleteMessage;
     private int updating = -1;
     private string? updateName;
     private int updateQuantity;
@@ -68,14 +81,26 @@ else
             StateHasChanged();
         }
     }
-    private async void Updating(InventoryItem item){
+    private void Updating(InventoryItem item){
         updateName = item.Name;
         updateQuantity = item.Quantity;
         updating = item.Id;
     }
     private async void SaveUpdate(InventoryItem item){
+        //Add exception handling if have time
         inventory = await InventoryService.UpdateAsync(item, new InventoryItem{Name = updateName, Quantity = updateQuantity});
         updating = -1;
+        StateHasChanged();
+    }
+
+    private void Deleting(InventoryItem item){
+        deleting = item.Id;
+    }
+
+    private async void Delete(InventoryItem item){
+        inventory = await InventoryService.DeleteAsync(item);
+        deleteMessage = "";
+        deleting = -1;
         StateHasChanged();
     }
     protected override async Task OnInitializedAsync()
