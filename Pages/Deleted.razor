@@ -1,0 +1,54 @@
+@page "/deleted"
+
+<PageTitle>Deleted</PageTitle>
+
+@using InventoryWebApp.Data
+@inject InventoryItemService InventoryService
+
+<h1>Inventory</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (inventory == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in inventory){   
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.DeletionComment</td>
+                    <td><button @onclick="()=>Undelete(item)">Undelete</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private List<InventoryItem>? inventory;
+    private async void Undelete(InventoryItem item){
+        inventory = await InventoryService.UndeleteAsync(item);
+        StateHasChanged();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateInventory();
+    }
+    private async Task UpdateInventory(){
+        inventory = await InventoryService.GetDeletedAsync();
+    }
+}
